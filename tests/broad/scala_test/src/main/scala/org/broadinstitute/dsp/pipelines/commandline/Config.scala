@@ -9,6 +9,7 @@ case class Config(
     arraysConfig: ArraysConfig = ArraysConfig(),
     arraysDataDeliveryConfig: ArraysDataDeliveryConfig =
       ArraysDataDeliveryConfig(),
+    batchBafRegressConfig: BatchBafRegressConfig = BatchBafRegressConfig(),
     cramDataDeliveryConfig: CramDataDeliveryConfig = CramDataDeliveryConfig(),
     genotypeConcordanceConfig: GenotypeConcordanceConfig =
       GenotypeConcordanceConfig(),

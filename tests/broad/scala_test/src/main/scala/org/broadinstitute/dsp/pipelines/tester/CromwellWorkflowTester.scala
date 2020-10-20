@@ -68,6 +68,8 @@ object CromwellWorkflowTester {
         new AnnotationFiltrationTester(config.annotationFiltrationConfig)
       case ArraysDataDelivery =>
         new ArraysDataDeliveryTester(config.arraysDataDeliveryConfig)
+      case BatchBafRegressTester =>
+        new BatchBafRegressTester(config.batchBafRegressConfig)
       case CramDataDelivery =>
         new CramDataDeliveryTester(config.cramDataDeliveryConfig)
       case Dummy => new DummyTester()
