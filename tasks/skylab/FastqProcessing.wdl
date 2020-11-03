@@ -4,7 +4,7 @@ task CorrectFastqFileExtensions {
     input {
         Array[File] files
 
-        String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.11"
+        String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.12"
         Int machine_mem_mb = 3500
         Int cpu = 1
         Int disk = ceil(size(files, "GiB") * 2) + 20
@@ -32,11 +32,8 @@ task CorrectFastqFileExtensions {
         while read fn
         do
           bfn=$(basename $fn)
-          echo "it was: $bfn"
           ofn=$(printf "%02d.%s" $i $bfn)
-          echo "it is: $ofn"
           ((++i))               # do NOT make this i++ (or else it evalulates to 0 and returns an error code 1)
-          echo "i=$i"
           if (file $fn | grep -q compressed); then
             if [[ $fn != *.gz ]]; then
               if [[ $fn != *.fastq ]]; then
@@ -81,7 +78,7 @@ task FastqProcessing {
     String sample_id
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.11"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.12"
 
     Int machine_mem_mb = 40000
     Int cpu = 16   
