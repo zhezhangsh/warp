@@ -84,11 +84,27 @@ workflow Optimus {
       counting_mode = counting_mode
   }
 
+  if (defined(i1_fastq)) {
+    call FastqProcessing.CorrectFastqFileExtensions as CorrectI1FastqFileExtensions {
+      input:
+        files = i1_fastq
+    }
+  }
+
+  call FastqProcessing.CorrectFastqFileExtensions as CorrectR1FastqFileExtensions {
+    input:
+      files = r1_fastq
+  }
+
+  call FastqProcessing.CorrectFastqFileExtensions as CorrectR2FastqFileExtensions {
+    input:
+      files = r2_fastq
+  }
   call FastqProcessing.FastqProcessing {
     input:
-      i1_fastq = i1_fastq,
-      r1_fastq = r1_fastq,
-      r2_fastq = r2_fastq,
+      i1_fastq = CorrectI1FastqFileExtensions.output_files,
+      r1_fastq = CorrectR1FastqFileExtensions.output_files,
+      r2_fastq = CorrectR2FastqFileExtensions.output_files,
       whitelist = whitelist,
       chemistry = chemistry,
       sample_id = input_id

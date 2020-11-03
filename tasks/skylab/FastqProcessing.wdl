@@ -1,5 +1,76 @@
 version 1.0
 
+task CorrectFastqFileExtensions {
+    input {
+        Array[File] files
+
+        String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.11"
+        Int machine_mem_mb = 3500
+        Int cpu = 1
+        Int disk = ceil(size(files, "GiB") * 2) + 20
+        Int preemptible = 0
+    }
+    meta {
+        description: "Checks an array of files to determine if they have the proper extension (.fastq or .fastq.gz) - adds extension if needed"
+    }
+
+    parameter_meta {
+        files: "List of input files"
+        docker: "(optional) the docker image containing the runtime environment for this task"
+        machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
+        cpu: "(optional) the number of cpus to provision for this task"
+        disk: "(optional) the amount of disk space (GiB) to provision for this task"
+        preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    }
+    command {
+        set -e
+        mkdir input_dir
+        mkdir output_dir
+
+        FILES_LIST=~{write_lines(files)}
+        i=0
+        while read fn
+        do
+          bfn=$(basename $fn)
+          echo "it was: $bfn"
+          ofn=$(printf "%02d.%s" $i $bfn)
+          echo "it is: $ofn"
+          ((++i))               # do NOT make this i++ (or else it evalulates to 0 and returns an error code 1)
+          echo "i=$i"
+          if (file $fn | grep -q compressed); then
+            if [[ $fn != *.gz ]]; then
+              if [[ $fn != *.fastq ]]; then
+                FQ=$ofn.fastq.gz
+              else
+                FQ=$ofn.gz
+              fi
+            else
+              FQ=$ofn
+            fi
+          elif [[ $fn != *.fastq ]]; then
+            FQ=$ofn.fastq
+          else
+            FQ=$ofn
+          fi
+          echo "Will return the file $fn as $FQ"
+          cp $fn output_dir/$FQ
+        done < $FILES_LIST
+    }
+
+    runtime {
+        docker: docker
+        memory: "${machine_mem_mb} MiB"
+        disks: "local-disk ${disk} HDD"
+        cpu: cpu
+        preemptible: preemptible
+    }
+
+    output {
+        Array[File] output_files = glob("output_dir/*")
+    }
+
+}
+
 task FastqProcessing {
   input {
     Array[File] r1_fastq
@@ -42,50 +113,12 @@ task FastqProcessing {
   command {
     set -e
 
-    FASTQS=$(python <<CODE
-    def rename_file(filename):
-        import shutil
-        import gzip
-        import re
-         
-        iscompressed = True
-        with gzip.open(filename, 'rt') as fin:
-           try:
-               _ = fin.readline()
-           except:
-               iscompressed = False
-
-        basename = re.sub(r'.gz$', '', filename)
-        basename = re.sub(r'.fastq$', '', basename)
- 
-        if iscompressed:
-            # if it is already compressed then add an extension .fastq.gz
-            newname = basename + ".fastq.gz" 
-        else: 
-            # otherwis, add just the .fastq extension
-            newname = basename + ".fastq"
-
-        if filename != newname:
-            # safe to rename since the old and the new names are different
-            shutil.move(filename, newname)
-
-        return newname
-    optstring = ""
-     
-    r1_fastqs = [ "${sep='", "' r1_fastq}" ]
-    r2_fastqs = [ "${sep='", "' r2_fastq}" ]
-    i1_fastqs = [ "${sep='", "' i1_fastq}" ]
-    for fastq in r1_fastqs:
-        if fastq.strip(): 
-            optstring += " --R1 " + rename_file(fastq)
-    for fastq in r2_fastqs:
-        if fastq.strip(): 
-            optstring += " --R2 " + rename_file(fastq)
-    for fastq in i1_fastqs:
-        if fastq.strip(): 
-            optstring += " --I1 " + rename_file(fastq)
-    print(optstring)
-    CODE)
+    # I1 file are optional,  and sometimes they are left out
+    if [ -n '~{sep=',' i1_fastq}' ]; then
+      FLAG="--I1 ~{sep=' --I1 ' i1_fastq}"
+    else
+      FLAG=''
+    fi
 
     # use the right UMI length depending on the chemistry
     if [ "~{chemistry}" == "tenX_v2" ]; then
@@ -104,7 +137,9 @@ task FastqProcessing {
         --barcode-length 16 \
         --umi-length $UMILENGTH \
         --sample-id "~{sample_id}" \
-        $FASTQS \
+        $FLAG \
+        --R1 ~{sep=' --R1 ' r1_fastq} \
+        --R2 ~{sep=' --R2 ' r2_fastq} \
         --white-list "~{whitelist}" 
   }
   

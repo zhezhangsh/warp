@@ -11,10 +11,11 @@ task CorrectUMItools {
         String output_bam_filename = "output.bam"
         String groupout_filename = "groupout.tsv"
 
-        ## TODO: Optimize these values
-        Int machine_mem_mb = 16000
-        Int cpu = 1
-        Int disk = ceil(size(bam_input, "Gi") * 6) + 50
+        ## These values were determined by examining the monitoring.log for a run of this task on a 20GB bam
+        ## Maximum memory used: 15.70 GB, Disk: 62 GB, CPU: 75%
+        Int machine_mem_mb = 30000
+        Int cpu = 2
+        Int disk = ceil(size(bam_input, "GiB") * 6) + 20
         Int preemptible = 3
     }
 
@@ -74,6 +75,8 @@ task CorrectUMItools {
 
     output {
         File bam_output = "${output_bam_filename}"
+        File umi_tools_output_log_file = "outlog.txt"
+        File umi_tools_error_log_file = "outerr.txt"
         File group_output = "${groupout_filename}"
     }
 
