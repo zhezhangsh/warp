@@ -87,7 +87,7 @@ workflow Optimus {
   if (defined(i1_fastq)) {
     call FastqProcessing.CorrectFastqFileExtensions as CorrectI1FastqFileExtensions {
       input:
-        files = i1_fastq
+        files = select_first([i1_fastq])
     }
   }
 
@@ -102,7 +102,7 @@ workflow Optimus {
   }
   call FastqProcessing.FastqProcessing {
     input:
-      i1_fastq = CorrectI1FastqFileExtensions.output_files,
+      i1_fastq = if defined(i1_fastq) then CorrectI1FastqFileExtensions.output_files else i1_fastq,
       r1_fastq = CorrectR1FastqFileExtensions.output_files,
       r2_fastq = CorrectR2FastqFileExtensions.output_files,
       whitelist = whitelist,
