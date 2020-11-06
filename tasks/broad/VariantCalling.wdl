@@ -108,6 +108,15 @@ workflow VariantCalling {
       preemptible_tries = agg_preemptible_tries
   }
 
+  if (make_gvcf) {
+    call Reblock.Reblock as Reblock {
+      input:
+        gvcf = MergeVCFs.output_gvcf,
+        gvcf_index = MergeVCFs.output_gvcf_index,
+        output_vcf_filename = basename(MergeVCFs.output_gvcf, ".g.vcf.gz") + ".reblocked.g.vcf.gz"
+    }
+  }
+
   if (make_bamout) {
     call MergeBamouts {
       input:
@@ -119,8 +128,8 @@ workflow VariantCalling {
   # Validate the (g)VCF output of HaplotypeCaller
   call QC.ValidateVCF as ValidateVCF {
     input:
-      input_vcf = MergeVCFs.output_vcf,
-      input_vcf_index = MergeVCFs.output_vcf_index,
+      input_vcf = select_first([Reblock.output_vcf, MergeVCFs.output_vcf]),
+      input_vcf_index = select_first([Reblock.output_vcf, MergeVCFs.output_vcf_index]),
       dbsnp_vcf = dbsnp_vcf,
       dbsnp_vcf_index = dbsnp_vcf_index,
       ref_fasta = ref_fasta,
@@ -134,8 +143,8 @@ workflow VariantCalling {
   # QC the (g)VCF
   call QC.CollectVariantCallingMetrics as CollectVariantCallingMetrics {
     input:
-      input_vcf = MergeVCFs.output_vcf,
-      input_vcf_index = MergeVCFs.output_vcf_index,
+      input_vcf = select_first([Reblock.output_vcf, MergeVCFs.output_vcf]),
+      input_vcf_index = select_first([Reblock.output_vcf, MergeVCFs.output_vcf_index]),
       metrics_basename = final_vcf_base_name,
       dbsnp_vcf = dbsnp_vcf,
       dbsnp_vcf_index = dbsnp_vcf_index,
@@ -148,8 +157,8 @@ workflow VariantCalling {
   output {
     File vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
     File vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
-    File output_vcf = MergeVCFs.output_vcf
-    File output_vcf_index = MergeVCFs.output_vcf_index
+    File output_vcf = select_first([Reblock.output_vcf, MergeVCFs.output_vcf])
+    File output_vcf_index = select_first([Reblock.output_vcf, MergeVCFs.output_vcf_index])
     File? bamout = MergeBamouts.output_bam
     File? bamout_index = MergeBamouts.output_bam_index
   }

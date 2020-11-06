@@ -172,6 +172,40 @@ task MergeVCFs {
   }
 }
 
+task Reblock {
+
+  input {
+    File gvcf
+    File gvcf_index
+    String output_vcf_filename
+    String docker_image = "us.gcr.io/broad-gatk/gatk:4.1.4.1"
+  }
+
+  Int disk_size = ceil(size(gvcf, "GiB")) * 2
+
+  command {
+    gatk --java-options "-Xms3g -Xmx3g" \
+      ReblockGVCF \
+      -V ~{gvcf} \
+      -drop-low-quals \
+      -do-qual-approx \
+      --floor-blocks -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 \
+      -O ~{output_vcf_filename}
+  }
+
+  runtime {
+    memory: "3.75 GB"
+    disks: "local-disk " + disk_size + " HDD"
+    preemptible: 3
+    docker: docker_image
+  }
+
+  output {
+    File output_vcf = output_vcf_filename
+    File output_vcf_index = output_vcf_filename + ".tbi"
+  }
+}
+
 task HardFilterVcf {
   input {
     File input_vcf
