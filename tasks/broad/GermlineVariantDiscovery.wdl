@@ -187,7 +187,6 @@ task Reblock {
     gatk --java-options "-Xms3g -Xmx3g" \
       ReblockGVCF \
       -V ~{gvcf} \
-      -drop-low-quals \
       -do-qual-approx \
       --floor-blocks -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 \
       -O ~{output_vcf_filename}
