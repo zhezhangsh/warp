@@ -1,6 +1,6 @@
 version 1.0
 
-import "../../tasks/broad/GermlineVariantDiscovery.wdl" as Calling
+import "../../../../../../tasks/broad/GermlineVariantDiscovery.wdl" as Calling
 
 workflow ReblockGVCF {
 
