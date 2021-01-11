@@ -113,6 +113,9 @@ workflow VariantCalling {
       input:
         gvcf = MergeVCFs.output_vcf,
         gvcf_index = MergeVCFs.output_vcf_index,
+        ref_fasta = ref_fasta,
+        ref_fasta_index = ref_fasta_index,
+        ref_dict = ref_dict,
         output_vcf_filename = basename(MergeVCFs.output_vcf, ".g.vcf.gz") + ".reblocked.g.vcf.gz"
     }
   }

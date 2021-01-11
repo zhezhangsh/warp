@@ -9,6 +9,9 @@ workflow ReblockGVCF {
   input {
     File gvcf
     File gvcf_index
+    File ref_dict
+    File ref_fasta
+    File ref_fasta_index
     String docker_image = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
   }
 
@@ -18,6 +21,9 @@ workflow ReblockGVCF {
     input:
       gvcf = gvcf,
       gvcf_index = gvcf_index,
+      ref_fasta = ref_fasta,
+      ref_fasta_index = ref_fasta_index,
+      ref_dict = ref_dict,
       output_vcf_filename = gvcf_basename + ".reblocked.g.vcf.gz",
       docker_image = docker_image
   }

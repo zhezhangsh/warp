@@ -177,6 +177,9 @@ task Reblock {
   input {
     File gvcf
     File gvcf_index
+    File ref_dict
+    File ref_fasta
+    File ref_fasta_index
     String output_vcf_filename
     String docker_image = "us.gcr.io/broad-dsde-methods/update_reblocking@sha256:c2e484cba546169da8f8c4588f10f71a517d8b90059b4ddeead195e62bf1c0bd"
   }
@@ -186,6 +189,7 @@ task Reblock {
   command {
     gatk --java-options "-Xms3g -Xmx3g" \
       ReblockGVCF \
+      -R ~{ref_fasta} \
       -V ~{gvcf} \
       -do-qual-approx \
       --floor-blocks -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 \
