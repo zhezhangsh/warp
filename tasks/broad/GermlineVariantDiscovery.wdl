@@ -181,7 +181,7 @@ task Reblock {
     File ref_fasta
     File ref_fasta_index
     String output_vcf_filename
-    String docker_image = "us.gcr.io/broad-dsde-methods/update_reblocking@sha256:518cdef16fcb031c6bd4dfec9c799238e2885ceed1dd58ab8b09b5b8b268d13e"
+    String docker_image = "us.gcr.io/broad-dsde-methods/update_reblocking@sha256:e48f2b9dad332a66c34aa0556faa90bc76d2510cee92a613ac84c96b9eaa7002"
   }
 
   Int disk_size = ceil(size(gvcf, "GiB")) * 2 + 3
