@@ -184,7 +184,7 @@ task Reblock {
     String docker_image = "us.gcr.io/broad-dsde-methods/update_reblocking@sha256:c2e484cba546169da8f8c4588f10f71a517d8b90059b4ddeead195e62bf1c0bd"
   }
 
-  Int disk_size = ceil(size(gvcf, "GiB")) * 2
+  Int disk_size = ceil(size(gvcf, "GiB")) * 2 + 3
 
   command {
     gatk --java-options "-Xms3g -Xmx3g" \
