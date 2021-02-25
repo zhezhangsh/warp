@@ -114,6 +114,8 @@ workflow Arrays {
   "fi",
   "vault read --format=json $key | jq .data > ~{service_account_filename}"]
 
+
+
   call IlluminaGenotyping.IlluminaGenotypingArray as IlluminaGenotypingArray {
     input:
       autocall_version = autocall_version,
