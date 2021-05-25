@@ -114,6 +114,17 @@ workflow Arrays {
   "fi",
   "vault read --format=json $key | jq .data > ~{service_account_filename}"]
 
+  call DownloadGenotypes {
+    input:
+      sample_alias = sample_alias,
+      sample_lsid = sample_lsid,
+      haplotype_database_file = haplotype_database_file,
+      ref_fasta = ref_fasta,
+      ref_fasta_index = ref_fasta_index,
+      ref_dict = ref_dict,
+      preemptible_tries = preemptible_tries
+  }
+
   call InternalTasks.UpdateChipWellBarcodeIndex {
     input:
       params_file = params_file,
@@ -291,5 +302,47 @@ workflow Arrays {
   }
   meta {
     allowNestedInputs: true
+  }
+}
+
+task DownloadGenotypes {
+  input {
+    String sample_alias
+    String sample_lsid
+
+    File haplotype_database_file
+
+    File ref_fasta
+    File ref_fasta_index
+    File ref_dict
+
+    Int preemptible_tries
+  }
+
+  command <<<
+    java -Xms2g -Dpicard.useLegacyParser=false -jar /usr/gitc/picard-private.jar \
+    DownloadGenotypes \
+    --SAMPLE_ALIAS "~{sample_alias}" \
+    --SAMPLE_LSID ~{sample_lsid} \
+    --OUTPUT foo.vcf \
+    --CREATE_INDEX true \
+    --REFERENCE_SEQUENCE ~{ref_fasta} \
+    --HAPLOTYPE_MAP ~{haplotype_database_file} \
+    --EXPECTED_GENOTYPING_PLATFORMS FLUIDIGM \
+    --IGNORE_SPECIFIC_GENOTYPES_PLATFORM GENERAL_ARRAY \
+    --IGNORE_SPECIFIC_GENOTYPES_LSID ~{sample_lsid} \
+    --MERCURY_FP_STORE_URI https://portals.broadinstitute.org/portal-test/mercury-ws/fingerprint \
+    --USERNAME dsp-fp-dev \
+    --PASSWORD 'peph#datHe!2'
+  >>>
+
+  runtime {
+    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.0.10-1602016912"
+    memory: "3.5 GiB"
+    preemptible: preemptible_tries
+  }
+
+  output {
+    File fingerprint_genotypes_file = "foo.vcf"
   }
 }
