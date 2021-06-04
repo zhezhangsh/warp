@@ -1,6 +1,6 @@
 version 1.0
 
-import "../verification/VerifyTasks.wdl" as Tasks
+import "https://raw.githubusercontent.com/broadinstitute/warp/develop/verification/VerifyTasks.wdl" as Tasks
 
 ## Copyright Broad Institute, 2018
 ##
