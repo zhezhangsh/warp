@@ -27,15 +27,47 @@ carrot_cli pipeline create --name "MultiSampleArrays" \
 carrot_cli template create --pipeline_id 78c25454-3e7c-4d27-9092-553806a127fe --name "MultiSampleArrays Template" \
 --description "MultiSampleArrays Template" \
 --test_wdl https://raw.githubusercontent.com/broadinstitute/warp/develop/pipelines/broad/arrays/multi_sample/MultiSampleArrays.wdl \
---eval_wdl https://raw.githubusercontent.com/broadinstitute/warp/develop/verification/VerifyMultiSampleArrays.wdl
+--eval_wdl https://raw.githubusercontent.com/broadinstitute/warp/gg_CarrotTest/verification/VerifyMultiSampleArrays.wdl
+#OUT>  'template_id': 'b30b1b40-257d-4d14-8860-602ee51c5a8a'
+
+####
+# Map the template to the results you created, so the results will be accessible when the run
+# completes
+# Replace [template_id] with the template_id returned by `template create` and replace the result
+# ids with the result_id values from the `result create` command
+carrot_cli template map_to_result b30b1b40-257d-4d14-8860-602ee51c5a8a 200dde04-64b1-4c44-90e2-68b4e48dfcf9 MultiSampleArrays.combined_vcf
+# SUCCEEDED, No outputs
+
+####
+NOTE - skipped the report stuff (ipy)
 
 
+####
+# Create a test that defines default values that will be used for every run
+# Fill in the template_id from `template create`
+carrot_cli test create --name "MultiSampleArrays Test" --template_id b30b1b40-257d-4d14-8860-602ee51c5a8a \
+--description "MultiSampleArrays Test under Carrot" \
+--test_input_defaults /Users/ggrant/Documents/dev/warp/pipelines/broad/arrays/multi_sample/test_inputs/Plumbing/SimpleInput.json \
+--eval_input_defaults /Users/ggrant/Documents/dev/warp/pipelines/broad/arrays/multi_sample/eval_input_defaults.json
+#OUT>  'test_id': '4352e089-9757-4ded-bc2e-69a9ae9a3126'
 
+####
+# Run the test
+# Use the test_id from `test create`
+carrot_cli test run 4352e089-9757-4ded-bc2e-69a9ae9a3126
+#OUT>  'run_id': 'dd3119f0-736e-4e89-b429-abdc2a40c63e'
+
+####
+# Get the status of the run you started, along with results if it has completed
+carrot_cli run find_by_id dd3119f0-736e-4e89-b429-abdc2a40c63e
 
 
 # NOTES
 # Uniqueness constraint on the repository.
 # They seem to expect that the eval/verification WDL will pass and create an output describing whether it passed or failed.
+# Cannot handle relative imports in wdls.  Need to change them to full paths.
+# No obvious way to update truths.
+#
 
 # QUESTIONS:
 # Can I specify a VCF 'result_type'  AND my own VCF result type, where I ignore differences in date fields.

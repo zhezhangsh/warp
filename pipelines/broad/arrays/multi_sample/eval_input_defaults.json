@@ -1,0 +1,4 @@
+{
+  "VerifyMultiSampleArrays.test_vcf": "test_output:MultiSampleArrays.combined_vcf",
+  "VerifyMultiSampleArrays.truth_vcf": "gs://broad-gotc-test-storage/arrays/multi_sample/plumbing/truth/master/SimpleInput/SimpleInput.vcf.gz"
+}
