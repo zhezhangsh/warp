@@ -4,7 +4,7 @@ import "../../../../../../tasks/broad/GermlineVariantDiscovery.wdl" as Calling
 
 workflow ReblockGVCF {
 
-  String pipeline_version = "1.1.0"
+  String pipeline_version = "1.1.1"
 
   input {
     File gvcf
