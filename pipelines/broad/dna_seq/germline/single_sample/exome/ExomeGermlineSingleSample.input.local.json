@@ -1,12 +1,10 @@
 {
   "ExomeGermlineSingleSample.sample_and_unmapped_bams": {
-    "sample_name": "NA12878",
-    "base_file_name": "NA12878",
+    "sample_name": "HG00133",
+    "base_file_name": "HG00133.GRCh38DH.exome",
     "flowcell_unmapped_bams": [
-      "/home/ubuntu/gatk4/gatk-workflows/input/NA12878/NA12878_24RG_small/HJYFJ.4.NA12878.downsampled.query.sorted.unmapped.bam",
-      "/home/ubuntu/gatk4/gatk-workflows/input/NA12878/NA12878_24RG_small/HJYFJ.5.NA12878.downsampled.query.sorted.unmapped.bam"
-    ],
-    "final_gvcf_base_name": "NA12878",
+      "/home/ubuntu/gatk4/gatk-workflows/input/SRR099969/SRR099969.unmapped.bam" ],
+    "final_gvcf_base_name": "HG00133.GRCh38DH.exome",
     "unmapped_bam_suffix": ".unmapped.bam"
   },
 
