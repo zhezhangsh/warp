@@ -45,8 +45,8 @@
   },
 
 
-  "ExomeGermlineSingleSample.target_interval_list": "gs://broad-references-private/HybSelOligos/whole_exome_illumina_coding_v1/whole_exome_illumina_coding_v1.Homo_sapiens_assembly38.targets.interval_list",
-  "ExomeGermlineSingleSample.bait_interval_list": "gs://broad-references-private/HybSelOligos/whole_exome_illumina_coding_v1/whole_exome_illumina_coding_v1.Homo_sapiens_assembly38.baits.interval_list",
+  "ExomeGermlineSingleSample.target_interval_list": "/home/ubuntu/gatk4/hg38/v0/exome_calling_regions.v1.interval_list",
+  "ExomeGermlineSingleSample.bait_interval_list": "/home/ubuntu/gatk4/hg38/v0/exome_calling_regions.v1.interval_list",
   "ExomeGermlineSingleSample.bait_set_name": "whole_exome_illumina_coding_v1",
 
   "ExomeGermlineSingleSample.papi_settings": {
