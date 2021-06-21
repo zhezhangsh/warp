@@ -3,7 +3,7 @@
     "sample_name": "HG00133",
     "base_file_name": "HG00133.GRCh38DH.exome",
     "flowcell_unmapped_bams": [
-      "/home/ubuntu/gatk4/gatk-workflows/input/SRR099969/SRR099969.unmapped.bam" ],
+      "/home/ubuntu/gatk4/gatk-best-practices/exome-analysis-pipeline/SRR099969.unmapped.bam" ],
     "final_gvcf_base_name": "HG00133.GRCh38DH.exome",
     "unmapped_bam_suffix": ".unmapped.bam"
   },
@@ -38,7 +38,7 @@
     "haplotype_database_file": "/home/ubuntu/gatk4/hg38/v0/Homo_sapiens_assembly38.haplotype_database.txt"
   },
   "ExomeGermlineSingleSample.scatter_settings": {
-    "haplotype_scatter_count": 10,
+    "haplotype_scatter_count": 6,
     "break_bands_at_multiples_of": 0
   },
 
