@@ -3,7 +3,7 @@
     "sample_name": "HG00133",
     "base_file_name": "HG00133.GRCh38DH.exome",
     "flowcell_unmapped_bams": [
-      "/home/ubuntu/gatk4/gatk-best-practices/exome-analysis-pipeline/SRR099969.unmapped.bam" ],
+      "/home/ubuntu/gatk4/gatk-best-practices/exome-analysis-pipeline/SRR099969.unmapped.quarter.bam" ],
     "final_gvcf_base_name": "HG00133.GRCh38DH.exome",
     "unmapped_bam_suffix": ".unmapped.bam"
   },
